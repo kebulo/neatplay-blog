@@ -14,7 +14,7 @@ interface CategoryContract
      * @param array $columns
      * @return mixed
      */
-    public function listCategories(string $order = 'id', string $sort = 'desc', array $columns = ['*']);
+    public function listCategories(string $search = null, string $order = 'id', string $sort = 'desc', array $columns = ['*']);
 
     /**
      * @param int $id

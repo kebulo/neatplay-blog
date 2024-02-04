@@ -1,48 +1,16 @@
-<div class="app-sidebar__overlay" data-toggle="sidebar"></div>
-<aside class="app-sidebar">
-    <div class="app-sidebar__user">
-        <div>
-            <p class="app-sidebar__user-name">John Doe</p>
-            <p class="app-sidebar__user-designation">Frontend Developer</p>
-        </div>
+<div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+            <li class="nav-item">
+                <a href="{{ route('admin.blogs.index') }}" class="nav-link align-middle px-0 text-white">
+                    <i class="fa-solid fa-book-open"></i> <span class="ms-1 d-none d-sm-inline">Blogs</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.categories.index') }}" class="nav-link px-0 align-middle text-white">
+                    <i class="fa-solid fa-list"></i> <span class="ms-1 d-none d-sm-inline">Categories</span>
+                </a>
+            </li>
+        </ul>
     </div>
-    <ul class="app-menu">
-        <li>
-            <a class="app-menu__item active" href="#"><i class="app-menu__icon fa fa-dashboard"></i>
-                <span class="app-menu__label">Dashboard</span>
-            </a>
-        </li>
-
-        <li>
-            <a class="app-menu__item {{ Route::currentRouteName() == 'admin.categories.index' ? 'active' : '' }}" href="{{ route('admin.categories.index') }}">
-                <i class="app-menu__icon fa fa-th"></i>
-                <span class="app-menu__label">Categories</span>
-            </a>
-        </li>
-
-        <li>
-            <a class="app-menu__item {{ Route::currentRouteName() == 'admin.blogs.index' ? 'active' : '' }}" href="{{ route('admin.blogs.index') }}">
-                <i class="app-menu__icon fa fa-th"></i>
-                <span class="app-menu__label">Blogs</span>
-            </a>
-        </li>
-
-        <li class="treeview">
-            <a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-users"></i>
-                <span class="app-menu__label">Users</span>
-                <i class="treeview-indicator fa fa-angle-right"></i>
-            </a>
-            <ul class="treeview-menu">
-                <li>
-                    <a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i> Admin Users</a>
-                </li>
-                <li>
-                    <a class="treeview-item" href="#" target="_blank" rel="noopener noreferrer"><i class="icon fa fa-circle-o"></i> Roles</a>
-                </li>
-                <li>
-                    <a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i> Permissions</a>
-                </li>
-            </ul>
-        </li>
-    </ul>
-</aside>
+</div>

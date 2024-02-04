@@ -20,12 +20,12 @@ class Blog extends Model
      */
     protected $fillable = [
         'user_id',
-        'category',
+        'category_id',
         'title',
         'image',
         'public_path',
         'content',
-        'publish_date',
+        'publication_date',
         'public'
     ];
 
@@ -33,15 +33,22 @@ class Blog extends Model
      * @var array
      */
     protected $casts = [
-        'category' => 'integer',
+        'category_id' => 'integer',
         'public' => 'boolean',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function values()
+    public function user()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'blog_id');
     }
 }

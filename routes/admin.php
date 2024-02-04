@@ -20,7 +20,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::group(['middleware' => ['auth']], function () {
 
         Route::get('/', function () {
-            return view('admin.dashboard.index');
+            return view('admin.blogs.index');
         })->name('admin.dashboard');
 
         Route::group(['prefix' => 'categories'], function () {

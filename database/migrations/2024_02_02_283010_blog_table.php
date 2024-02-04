@@ -16,11 +16,11 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 
-            $table->unsignedBigInteger('category');
-            $table->foreign('category')->references('id')->on('categories');
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('categories');
 
             $table->string('title')->nullable();
-            $table->timestamp('publish_date')->nullable();
+            $table->date('publication_date')->nullable();
             $table->boolean('public')->nullable();
             $table->string('image')->nullable();
             $table->string('public_path')->nullable();

@@ -29,9 +29,32 @@ class BlogsRepository extends BaseRepository implements BlogsContract
      * @param array $columns
      * @return mixed
      */
-    public function listBlogs(string $order = 'id', string $sort = 'desc', array $columns = ['*'])
+    public function listBlogs($search = null, string $order = 'id', string $sort = 'desc', array $columns = ['*'], int $perPage = 9)
     {
-        return $this->all($columns, $order, $sort);
+        $query = $this->model->orderBy($order, $sort);
+
+        // If there's a search query, add a where clause for the title
+        if ($search) {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
+
+        return $query->select($columns)->get();
+    }
+
+    /**
+     * @param string $order
+     * @param string $sort
+     * @param array $columns
+     * @return mixed
+     */
+    public function listHomeBlogs(string $order = 'id', string $sort = 'desc', array $columns = ['*'], int $perPage = 9)
+    {
+        return $this->model
+            ->with('category')
+            ->where('public', 1)
+            ->orderBy($order, $sort)
+            ->select($columns)
+            ->paginate($perPage);
     }
 
     /**
@@ -72,7 +95,7 @@ class BlogsRepository extends BaseRepository implements BlogsContract
             return $Blog;
 
         } catch (QueryException $exception) {
-            throw new InvalidArgumentException($exception->getMessage());
+            throw new \Exception($exception->getMessage());
         }
     }
 
@@ -86,10 +109,9 @@ class BlogsRepository extends BaseRepository implements BlogsContract
 
         $collection = collect($params)->except('_token');
 
-        $image = '';
-        $public_path = '';
-
         if ($collection->has('image') && ($params['image'] instanceof UploadedFile)) {
+            $image = '';
+            $public_path = '';
 
             if ($blog->image != null) {
                 $this->deleteOne($blog->image);
@@ -98,13 +120,17 @@ class BlogsRepository extends BaseRepository implements BlogsContract
             $image_data = $this->uploadOne($params['image'], '/blog');
 
             $image = $image_data['file_path'];
-            $public_path = 'blog/'.$image_data['file_name'];
+            $public_path = 'blog/' . $image_data['file_name'];
         }
 
         $public = $collection->has('public') ? 1 : 0;
         $user_id = auth()->id();
 
-        $merge = $collection->merge(compact('public', 'user_id', 'image', 'public_path'));
+        if (isset($image)) {
+            $merge = $collection->merge(compact('public', 'user_id', 'image', 'public_path'));
+        } else {
+            $merge = $collection->merge(compact('public', 'user_id'));
+        }
 
         $blog->update($merge->all());
 

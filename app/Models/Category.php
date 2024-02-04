@@ -13,7 +13,12 @@ class Category extends Model
 
     protected $fillable = [
         'name',
+        'user_id',
         'icon',
+    ];
+
+    protected $casts = [
+        'user_id' => 'integer',
     ];
 
     /**

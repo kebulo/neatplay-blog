@@ -12,18 +12,22 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
-<body class="app sidebar-mini rtl">
+<body>
     @include('admin.partials.header')
-    @include('admin.partials.sidebar')
-    <main class="app-content container-fluid">
-        @yield('content')
-    </main>
-    <script src="{{ asset('/backend/js/jquery-3.2.1.min.js') }}"></script>
+
+    <div class="container-fluid p-0 row flex-nowrap">
+        @include('admin.partials.sidebar')
+        <main class="pr-5 pl-5 col py-3">
+            @yield('content')
+        </main>
+    </div>
+
+    <!--<script src="{{ asset('/backend/js/jquery-3.2.1.min.js') }}"></script>
     <script src="{{ asset('/backend/js/popper.min.js') }}"></script>
     <script src="{{ asset('/backend/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('/backend/js/main.js') }}"></script>
     <script src="{{ asset('/backend/js/plugins/pace.min.js') }}"></script>
-    @stack('scripts')
+    @stack('scripts')-->
 </body>
 
 </html>

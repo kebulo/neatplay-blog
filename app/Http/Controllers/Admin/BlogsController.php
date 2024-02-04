@@ -19,26 +19,13 @@ class BlogsController extends BaseController
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function homeBlogs() {
-        $blogs = $this->blogRepository->listBlogs('publish_date', 'desc', ['id', 'title', 'content']);
-
-        $this->setPageTitle('blogs', 'List of all blogs');
-
-        return view('site.pages.homepage', compact('blogs'));
-    }
-    public function homeBlog($title, $id) {
-        $blog = $this->blogRepository->findBlogById($id);
-
-        $this->setPageTitle('Article', $blog->title);
-
-        return view('site.pages.blog', compact('blog'));
-    }
-
-    public function index()
+    public function index(Request $request)
     {
-        $blogs = $this->blogRepository->listBlogs();
+        $search = $request->input('search');
 
-        $this->setPageTitle('blogs', 'List of all blogs');
+        $blogs = $this->blogRepository->listBlogs($search);
+
+        $this->setPageTitle('Articles', 'List of all articles');
 
         return view('admin.blogs.index', compact('blogs'));
     }
@@ -46,7 +33,7 @@ class BlogsController extends BaseController
     public function create()
     {
         $this->setPageTitle('blogs', 'Create blog');
-        $categories = $this->categoryRepository->listCategories('name', 'asc');
+        $categories = $this->categoryRepository->listCategories(null, 'name', 'asc');
 
         return view('admin.blogs.create', compact('categories'));
     }
@@ -71,7 +58,7 @@ class BlogsController extends BaseController
     public function edit($id)
     {
         $blog = $this->blogRepository->findBlogById($id);
-        $categories = $this->categoryRepository->listCategories('name', 'asc');
+        $categories = $this->categoryRepository->listCategories(null, 'name', 'asc');
 
         $this->setPageTitle('blogs', 'Edit blog : ' . $blog->title);
 
@@ -86,7 +73,7 @@ class BlogsController extends BaseController
 
         $params = $request->except('_token');
 
-        $blog = $this->blogRepository->updateBlog($params);  
+        $blog = $this->blogRepository->updateBlog($params); 
 
         if (!$blog) {
             return $this->responseRedirectBack('Error occurred while updating the blog.', 'error', true, true);

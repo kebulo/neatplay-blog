@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoriesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginRegisterController;
-use App\Http\Controllers\Admin\BlogsController;
+use App\Http\Controllers\Site\BlogsController;
+use App\Http\Controllers\Site\CommentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -10,18 +12,14 @@ use App\Http\Controllers\Admin\BlogsController;
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
+| routes are loaded by the RouteServiceProvider
 |
 */
 include base_path('routes/admin.php');
 
 Route::get('/', [BlogsController::class, 'homeBlogs'])->name('site.pages.homepage');
 Route::get('/{title}/{id}/', [BlogsController::class, 'homeBlog'])->name('site.pages.blog');
-
-//Route::get('/', function () {
-//    return view('welcome');
-//});
+Route::get('/{categoryName}/{id}/', [CategoriesController::class, 'getCategoriesBlogsPage'])->name('site.pages.categories');
 
 
 Route::controller(LoginRegisterController::class)->group(function () {
@@ -32,4 +30,8 @@ Route::controller(LoginRegisterController::class)->group(function () {
     Route::get('/login', 'login')->name('login');
     Route::post('/authenticate', 'authenticate')->name('authenticate');
     Route::post('/logout', 'logout')->name('logout');
+});
+
+Route::group(['prefix' => 'comments'], function () {
+    Route::post('/store', [CommentsController::class, 'store'])->name('site.comments.store');
 });

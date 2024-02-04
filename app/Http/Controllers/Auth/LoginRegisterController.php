@@ -53,7 +53,7 @@ class LoginRegisterController extends Controller
         $credentials = $request->only('email', 'password');
         Auth::attempt($credentials);
         $request->session()->regenerate();
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.blogs.index')
             ->withSuccess('You have successfully registered & logged in!');
     }
 
@@ -82,7 +82,7 @@ class LoginRegisterController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('admin.dashboard')
+            return redirect()->route('admin.blogs.index')
                 ->withSuccess('You have successfully logged in!');
         }
 
@@ -100,7 +100,7 @@ class LoginRegisterController extends Controller
     public function dashboard()
     {
         if (Auth::check()) {
-            return view('admin.dashboard');
+            return view('admin.blogs.index');
         }
 
         return redirect()->route('login')

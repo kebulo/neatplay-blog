@@ -10,7 +10,15 @@ interface BlogsContract
      * @param array $columns
      * @return mixed
      */
-    public function listBlogs(string $order = 'id', string $sort = 'desc', array $columns = ['*']);
+    public function listBlogs(string $search = null, string $order = 'id', string $sort = 'desc', array $columns = ['*']);
+
+    /**
+     * @param string $order
+     * @param string $sort
+     * @param array $columns
+     * @return mixed
+     */
+    public function listHomeBlogs(string $order = 'id', string $sort = 'desc', array $columns = ['*']);
 
     /**
      * @param int $id

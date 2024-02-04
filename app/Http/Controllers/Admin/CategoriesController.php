@@ -21,13 +21,26 @@ class CategoriesController extends BaseController
     {
         $this->categoryRepository = $categoryRepository;
     }
+    
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function getCategoriesBlogsPage()
+    {
+        $categories = $this->categoryRepository->listCategories();
+
+        $this->setPageTitle('Categories', 'List of all categories');
+        return view('admin.categories.index', compact('categories'));
+    }
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = $this->categoryRepository->listCategories();
+        $search = $request->input('search');
+
+        $categories = $this->categoryRepository->listCategories($search);
 
         $this->setPageTitle('Categories', 'List of all categories');
         return view('admin.categories.index', compact('categories'));
