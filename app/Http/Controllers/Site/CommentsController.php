@@ -7,16 +7,28 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+/**
+ * Comments Controller manages all the views and the bridge between the repository (database methods) and the public site requests
+ */
 class CommentsController extends BaseController
 {
     protected $commentContract;
     protected $commentRepository;
 
+    /**
+     * CommentsController constructor.
+     * @param CommentContract $commentContract -> Comments DB table handler
+     */
     public function __construct(CommentContract $commentContract)
     {
         $this->commentRepository = $commentContract;
     }
 
+    /**
+     * Handle the request to create a new comment.
+     * @param Request $request -> Comment data, only the content is required.
+     * @return \Illuminate\Contracts\Routing\ResponseFactory -> Redirection with the message of success or error
+     */
     public function store(Request $request)
     {
         $this->validate($request, [

@@ -57,7 +57,7 @@
                                     <td class="text-center">
                                         <div class="btn-group" role="group" aria-label="Second group">
                                             <a href="{{ route('admin.blogs.edit', $blog->id) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                            <a href="{{ route('admin.blogs.delete', $blog->id) }}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+                                            <a href="{{ route('admin.blogs.delete', $blog->id) }}" class="btn btn-sm btn-danger" data-confirm="Are you sure you want to delete this blog?"><i class="fa fa-trash"></i></a>
                                         </div>
                                     </td>
                                 </tr>
@@ -68,9 +68,49 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this blog?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="#" id="confirmDelete" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function () {
+            var deleteLinks = $('a[data-confirm]');
+            var confirmationModal = $('#confirmationModal');
+            var confirmDeleteLink = $('#confirmDelete');
+
+            deleteLinks.click(function (event) {
+                event.preventDefault();
+
+                var confirmMessage = $(this).data('confirm');
+                confirmationModal.find('.modal-body').text(confirmMessage);
+
+                confirmDeleteLink.attr('href', $(this).attr('href')); // Set the href for delete
+
+                confirmationModal.modal('show');
+            });
+
+            confirmDeleteLink.click(function () {
+                window.location.href = $(this).attr('href'); // Follow the link on confirmation
+            });
+        });
+    </script>
 @endsection
-@push('scripts')
-    <script type="text/javascript" src="{{ asset('backend/js/plugins/jquery.dataTables.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('backend/js/plugins/dataTables.bootstrap.min.js') }}"></script>
-    <script type="text/javascript">$('#sampleTable').DataTable();</script>
-@endpush

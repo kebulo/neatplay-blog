@@ -1,18 +1,14 @@
 @extends('admin.app')
 @section('title') {{ $pageTitle }} @endsection
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-    crossorigin="anonymous"></script>
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-    crossorigin="anonymous"></script>
-
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+@stack('scripts')
 @section('content')
 <div class="app-title">
     <div>
@@ -23,7 +19,7 @@
 <div class="admin--blog-edit">
     <form action="{{ route('admin.blogs.update') }}" method="POST" role="form" enctype="multipart/form-data">
         @csrf
-        <h3 class="tile-title">Blog Information</h3>
+        <h3 class="tile-title">Article Information</h3>
         <hr />
 
         <input type="hidden" name="id" value="{{ $blog->id }}">
@@ -61,7 +57,9 @@
             </div>
 
             <div class="col-12 col-sm-4 col-md-2 position-relative">
+                @if($blog->public_path)
                 <img class="img-fluid" src="{{ asset('storage/' . $blog->public_path) }}" alt="" />
+                @endif
             </div>
         </div>
 
@@ -80,10 +78,10 @@
         </div>
 
         <div class="row mt-2">
-            <div class="col-12 text-end btn-group" role="group">
-                <a class="btn btn-secondary" href="{{ route('admin.blogs.index') }}"><i
+            <div class="col-12 col-sm-8 m-auto text-end btn-group" role="group">
+                <a class="btn btn-outline-secondary" href="{{ route('admin.blogs.index') }}"><i
                         class="fa fa-fw fa-lg fa-chevron-left"></i>Return</a>
-                <button class="btn btn-dark" type="submit"><i class="fa fa-fw fa-lg fa-floppy-disk"></i>Save
+                <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-floppy-disk"></i>Save
                     Changes</button>
             </div>
         </div>

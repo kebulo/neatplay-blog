@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Contracts\CategoryContract;
 use App\Http\Controllers\BaseController;
+use Illuminate\Support\Facades\Validator;
 
 class CategoriesController extends BaseController
 {
@@ -15,14 +16,15 @@ class CategoriesController extends BaseController
 
     /**
      * CategoryController constructor.
-     * @param CategoryContract $categoryRepository
+     * @param CategoryContract $categoryRepository  -> Category db table handler
      */
     public function __construct(CategoryContract $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
     }
-    
+
     /**
+     * Loads the blogs based on the category id provided
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function getCategoriesBlogsPage()
@@ -34,6 +36,7 @@ class CategoriesController extends BaseController
     }
 
     /**
+     * Loads the admin list of categories with the spected view
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
@@ -47,6 +50,7 @@ class CategoriesController extends BaseController
     }
 
     /**
+     * Loads the categories admin create form
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
@@ -56,9 +60,9 @@ class CategoriesController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * Handle the request to create a new categorie based on the parameters provided ($request)
+     * @param Request $request -> Contain the params to create a new category, only the name is required
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
@@ -77,6 +81,7 @@ class CategoriesController extends BaseController
     }
 
     /**
+     * Loads the categories admin update form with the category data based on the ID provided
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -89,14 +94,16 @@ class CategoriesController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * Handle the request to update a categoy based on the parameters provided ($request)
+     * @param Request $request -> Contains the category data, only the name and the ID are required
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|max:191',
+            'id' => 'required',
+            'name' => 'required|max:250',
         ]);
 
         $params = $request->except('_token');
@@ -110,11 +117,22 @@ class CategoriesController extends BaseController
     }
 
     /**
+     * Handle the request to delete a category based on the ID
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function delete($id)
     {
+        $rules = [
+            'id' => 'required|integer|exists:categories,id',
+        ];
+
+        $validator = Validator::make(['id' => $id], $rules);
+
+        if ($validator->fails()) {
+            return redirect()->route('admin.blogs.index')->withErrors($validator)->withInput();
+        }
+
         $category = $this->categoryRepository->deleteCategory($id);
 
         if (!$category) {

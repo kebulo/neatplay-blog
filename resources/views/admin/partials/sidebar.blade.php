@@ -3,7 +3,7 @@
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
             <li class="nav-item">
                 <a href="{{ route('admin.blogs.index') }}" class="nav-link align-middle px-0 text-white">
-                    <i class="fa-solid fa-book-open"></i> <span class="ms-1 d-none d-sm-inline">Blogs</span>
+                    <i class="fa-solid fa-book-open"></i> <span class="ms-1 d-none d-sm-inline">Articles</span>
                 </a>
             </li>
             <li>

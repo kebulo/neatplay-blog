@@ -22,10 +22,10 @@ class Category extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function blogs()
     {
-        return $this->belongsToMany(Blog::class);
+        return $this->hasMany(Blog::class, 'category_id');
     }
 }

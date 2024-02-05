@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('blog_id');
-            $table->foreign('blog_id')->references('id')->on('blog');
+            $table->foreign('blog_id')->references('id')->on('blog')->onDelete('cascade');;
             $table->string('name')->nullable();
             $table->string('content', 300)->nullable();
             $table->timestamps();

@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 use App\Contracts\CategoryContract;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class CategoryRepository
@@ -41,6 +42,8 @@ class CategoryRepository extends BaseRepository implements CategoryContract
         if ($search) {
             $query->where('name', 'like', '%' . $search . '%');
         }
+
+        $query->where('user_id', Auth::user()->id);
 
         return $query->select($columns)->get();
     }
@@ -93,6 +96,12 @@ class CategoryRepository extends BaseRepository implements CategoryContract
     {
         $category = $this->findCategoryById($params['id']);
 
+        $user_id = Auth::user()->id;
+
+        if ($category->user_id && $category->user_id != $user_id) {
+            throw new \Exception("Invalid user ID provided.");
+        }
+
         $collection = collect($params)->except('_token');
 
         $user_id = auth()->id();
@@ -111,6 +120,12 @@ class CategoryRepository extends BaseRepository implements CategoryContract
     public function deleteCategory($id)
     {
         $category = $this->findCategoryById($id);
+
+        $user_id = Auth::user()->id;
+
+        if ($category->user_id && $category->user_id != $user_id) {
+            throw new \Exception("Invalid user ID provided.");
+        }
 
         $category->delete();
 

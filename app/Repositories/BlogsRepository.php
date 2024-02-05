@@ -9,10 +9,12 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
+use Illuminate\Support\Facades\Auth;
 
 class BlogsRepository extends BaseRepository implements BlogsContract
 {
     use UploadAble;
+
     /**
      * BlogRepository constructor.
      * @param Blog $model
@@ -38,6 +40,8 @@ class BlogsRepository extends BaseRepository implements BlogsContract
             $query->where('title', 'like', '%' . $search . '%');
         }
 
+        $query->where('user_id', Auth::user()->id);
+
         return $query->select($columns)->get();
     }
 
@@ -62,10 +66,27 @@ class BlogsRepository extends BaseRepository implements BlogsContract
      * @return mixed
      * @throws ModelNotFoundException
      */
-    public function findBlogById(int $id)
-    {
+    public function findHomeBlogById(int $id){
+
         try {
-            return $this->findOneOrFail($id);
+            return $this->model->findOrFail($id);
+
+        } catch (ModelNotFoundException $e) {
+
+            throw new ModelNotFoundException($e);
+        }
+
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
+     */
+    public function findBlogById(int $id){
+
+        try {
+            return $this->model->where('user_id', Auth::user()->idd)->findOrFail($id);
 
         } catch (ModelNotFoundException $e) {
 
@@ -84,7 +105,7 @@ class BlogsRepository extends BaseRepository implements BlogsContract
             $collection = collect($params);
 
             $public = $collection->has('public') ? 1 : 0;
-            $user_id = auth()->id();
+            $user_id = Auth::user()->id;
 
             $merge = $collection->merge(compact('public', 'user_id'));
 
@@ -106,6 +127,11 @@ class BlogsRepository extends BaseRepository implements BlogsContract
     public function updateBlog(array $params)
     {
         $blog = $this->findBlogById($params['id']);
+        $user_id = Auth::user()->id;
+
+        if ($blog->user_id && $blog->user_id != $user_id) {
+            throw new \Exception("Invalid user ID provided.");
+        }
 
         $collection = collect($params)->except('_token');
 
@@ -124,7 +150,7 @@ class BlogsRepository extends BaseRepository implements BlogsContract
         }
 
         $public = $collection->has('public') ? 1 : 0;
-        $user_id = auth()->id();
+        
 
         if (isset($image)) {
             $merge = $collection->merge(compact('public', 'user_id', 'image', 'public_path'));
@@ -143,14 +169,18 @@ class BlogsRepository extends BaseRepository implements BlogsContract
      */
     public function deleteBlog($id)
     {
-        $Blog = $this->findBlogById($id);
+        $blog = $this->findBlogById($id);
 
-        if ($Blog->image != null) {
-            $this->deleteOne($Blog->image);
+        if ($blog->user_id && $blog->user_id != Auth::user()->id) {
+            throw new \Exception("Invalid user ID provided.");
         }
 
-        $Blog->delete();
+        if ($blog->image != null) {
+            $this->deleteOne($blog->image);
+        }
 
-        return $Blog;
+        $blog->delete();
+
+        return $blog;
     }
 }

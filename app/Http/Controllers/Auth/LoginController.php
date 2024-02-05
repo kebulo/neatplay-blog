@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    use AuthenticatesUsers;
 
     /**
      * Where to redirect users after login.
@@ -55,7 +54,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->route('admin.blogs.index')
-                ->withSuccess('You have successfully logged in!');
+                ->withSuccess(['You have successfully logged in!']);
         }
 
         return back()->withErrors([

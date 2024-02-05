@@ -31,31 +31,11 @@
         </div>
 
         <div class="row mt-2">
-            <div class="col-12 text-end btn-group" role="group">
-                <a class="btn btn-secondary" href="{{ route('admin.categories.index') }}"><i class="fa fa-fw fa-lg fa-chevron-left"></i>Return</a>
-                <button class="btn btn-dark" type="submit"><i class="fa fa-fw fa-lg fa-floppy-disk"></i>Save Changes</button>
+            <div class="col-12 col-sm-8 m-auto text-end btn-group" role="group">
+                <a class="btn btn-outline-secondary" href="{{ route('admin.categories.index') }}"><i class="fa fa-fw fa-lg fa-chevron-left"></i>Return</a>
+                <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-floppy-disk"></i>Save Changes</button>
             </div>
         </div>
     </form>
 </div>
 @endsection
-
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-<!-- Include jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-
-<script>
-    $(document).ready(function () {
-        $('#content').summernote({
-            height: 300, // Set the height of the editor
-            placeholder: 'Write your HTML here...',
-            codemirror: { // Enable codemirror to show HTML code
-                theme: 'monokai',
-                lineNumbers: true,
-                mode: 'text/html',
-            },
-        });
-    });
-</script>

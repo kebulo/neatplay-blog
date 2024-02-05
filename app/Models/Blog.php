@@ -37,16 +37,25 @@ class Blog extends Model
         'public' => 'boolean',
     ];
 
+    /**
+     * Relationship between Users and Articles (One to Many)
+     */
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /**
+     * Relationship between Categories and Articles (One to Many)
+     */
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    /**
+     * Relationship between Comments and Articles (One to Many)
+     */
     public function comments()
     {
         return $this->hasMany(Comment::class, 'blog_id');

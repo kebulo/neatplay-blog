@@ -7,13 +7,13 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarColor01">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#">{{ Auth::user()->full_name }} <span class="caret"></span></a>
+                        <a class="nav-link" href="#">{{ Auth::user()->name }} <span class="caret"></span></a>
                     </li>
 
                     <li class="nav-item">

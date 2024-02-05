@@ -83,12 +83,12 @@ class LoginRegisterController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->route('admin.blogs.index')
-                ->withSuccess('You have successfully logged in!');
+                ->withSuccess(['You have successfully logged in!']);
         }
 
         return back()->withErrors([
-            'email' => 'Your provided credentials do not match in our records.',
-        ])->onlyInput('email');
+            'error' => 'Your provided credentials do not match in our records.',
+        ])->onlyInput('error');
 
     }
 

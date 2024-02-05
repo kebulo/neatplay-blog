@@ -11,7 +11,7 @@ use App\Http\Controllers\Site\CommentsController;
 | Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register web routes for your application. These
+| Here is where the web routes for the application are registered. These
 | routes are loaded by the RouteServiceProvider
 |
 */
@@ -19,8 +19,12 @@ include base_path('routes/admin.php');
 
 Route::get('/', [BlogsController::class, 'homeBlogs'])->name('site.pages.homepage');
 Route::get('/{title}/{id}/', [BlogsController::class, 'homeBlog'])->name('site.pages.blog');
-Route::get('/{categoryName}/{id}/', [CategoriesController::class, 'getCategoriesBlogsPage'])->name('site.pages.categories');
 
+Route::get('/{categoryName}/{id}/', [CategoriesController::class, 'getCategoriesBlogsPage'])->name('site.pages.categories');
+// Create a new comment into the database
+Route::group(['prefix' => 'comments'], function () {
+    Route::post('/store', [CommentsController::class, 'store'])->name('site.comments.store');
+});
 
 Route::controller(LoginRegisterController::class)->group(function () {
     // Register a new user
@@ -29,9 +33,6 @@ Route::controller(LoginRegisterController::class)->group(function () {
     // Login the user
     Route::get('/login', 'login')->name('login');
     Route::post('/authenticate', 'authenticate')->name('authenticate');
+    // Logout the user
     Route::post('/logout', 'logout')->name('logout');
-});
-
-Route::group(['prefix' => 'comments'], function () {
-    Route::post('/store', [CommentsController::class, 'store'])->name('site.comments.store');
 });

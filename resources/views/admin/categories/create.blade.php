@@ -30,11 +30,11 @@
         </div>
 
         <div class="row mt-2">
-            <div class="col-12 text-end btn-group" role="group">
-                <a class="btn btn-secondary" href="{{ route('admin.categories.index') }}">
+            <div class="col-12 col-sm-8 m-auto text-end btn-group" role="group">
+                <a class="btn btn-outline-secondary" href="{{ route('admin.categories.index') }}">
                     <i class="fa fa-fw fa-lg fa-chevron-left"></i>Return
                 </a>
-                <button class="btn btn-dark" type="submit">
+                <button class="btn btn-primary" type="submit">
                     <i class="fa fa-fw fa-lg fa-floppy-disk"></i>Save Changes
                 </button>
             </div>

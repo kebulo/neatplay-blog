@@ -19,30 +19,22 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'admin'], function () {
     Route::group(['middleware' => ['auth']], function () {
 
-        Route::get('/', function () {
-            return view('admin.blogs.index');
-        })->name('admin.dashboard');
-
         Route::group(['prefix' => 'categories'], function () {
-
             Route::get('/', [CategoriesController::class, 'index'])->name('admin.categories.index');
             Route::get('/create', [CategoriesController::class, 'create'])->name('admin.categories.create');
             Route::post('/store', [CategoriesController::class, 'store'])->name('admin.categories.store');
             Route::get('/{id}/edit', [CategoriesController::class, 'edit'])->name('admin.categories.edit');
             Route::post('/update', [CategoriesController::class, 'update'])->name('admin.categories.update');
             Route::get('/{id}/delete', [CategoriesController::class, 'delete'])->name('admin.categories.delete');
-
         });
 
         Route::group(['prefix' => 'blogs'], function () {
-
             Route::get('/', [BlogsController::class, 'index'])->name('admin.blogs.index');
             Route::get('/create', [BlogsController::class, 'create'])->name('admin.blogs.create');
             Route::post('/store', [BlogsController::class, 'store'])->name('admin.blogs.store');
             Route::get('/{id}/edit', [BlogsController::class, 'edit'])->name('admin.blogs.edit');
             Route::post('/update', [BlogsController::class, 'update'])->name('admin.blogs.update');
             Route::get('/{id}/delete', [BlogsController::class, 'delete'])->name('admin.blogs.delete');
-
         });
 
     });
