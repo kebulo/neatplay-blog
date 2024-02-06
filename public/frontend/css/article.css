@@ -98,3 +98,16 @@ textarea.has-value+label {
 .comments--main-container #comment--remaing-characters {
     float: right;
 }
+
+.comments--delete-comment-container a {
+    color: #b10000;
+    font-weight: 600;
+}
+
+.comments--delete-comment-container .alert-danger {
+    background: #640000;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #9e0000;
+}

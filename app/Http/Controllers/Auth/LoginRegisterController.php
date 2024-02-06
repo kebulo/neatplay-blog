@@ -54,7 +54,7 @@ class LoginRegisterController extends Controller
         Auth::attempt($credentials);
         $request->session()->regenerate();
         return redirect()->route('admin.blogs.index')
-            ->withSuccess('You have successfully registered & logged in!');
+            ->withSuccess(["success" => 'You have successfully registered & logged in!']);
     }
 
     /**

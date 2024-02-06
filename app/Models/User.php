@@ -42,4 +42,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Relationship between Users and Articles (One to Many)
+     */
+    public function articles()
+    {
+        return $this->hasMany(Blog::class, 'user_id');
+    }
 }

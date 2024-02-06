@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BlogsController;
 use App\Http\Controllers\Admin\CategoriesController;
+use App\Http\Controllers\Admin\CommentsController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -37,6 +38,10 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('/{id}/delete', [BlogsController::class, 'delete'])->name('admin.blogs.delete');
         });
 
+        /* Comments routes admin section */
+        Route::group(['prefix' => 'comments'], function () {
+            Route::get('/{id}/{blog_id}/delete', [CommentsController::class, 'delete'])->name('admin.comments.delete');
+        });
     });
 
 });

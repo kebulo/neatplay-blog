@@ -32,8 +32,12 @@
 <div class="articles--main-container">
     @if($blogs->isNotEmpty())
     @foreach($blogs as $article)
+    @php
+        $urlFriendlyText = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $article->title));
+        $urlFriendlyText = trim($urlFriendlyText, '-');
+    @endphp
     <div class="card">
-        <a href="{{ route('site.pages.blog', [strtolower(str_replace(' ', '-', $article->title)), $article->id]) }}">
+        <a href="{{ route('site.pages.blog', [$urlFriendlyText, $article->id]) }}">
             <div class="card__header">
                 @if($article->public_path)
                 <img src="{{ asset('storage/' . $article->public_path) }}" alt="{{$article->title}}" class="card__image"

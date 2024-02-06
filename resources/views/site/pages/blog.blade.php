@@ -51,6 +51,19 @@
                 <p>{{ $comment->content }}</p>
             </div>
         </div>
+
+        @if(!auth()->guest() && auth()->user()->id === $blog->user_id)
+        <div class="comments--delete-comment-container text-right">
+            <a href="{{ route('admin.comments.delete', [$comment->id, $blog->id]) }}" 
+            class="comments--delete-comment"
+            id="comments--delete-comment">Delete Comment</a>
+            @if(session('error'))
+                <div class="alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+        </div>
+        @endif
         @endforeach
     </div>
 
@@ -92,6 +105,14 @@
         let contentInput = $("#content");
         let contentRemainingCharacters = $("#comment--remaing-characters");
 
+        $('.comments--delete-comment').on('click', function(e) {
+            e.preventDefault();
+
+            if (confirm("Are you sure you want to delete this comment? This action cannot be undone.")) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+
         nameInput.on("focusout", function() {
             setClassHasValue(nameInput);
         });
@@ -107,7 +128,6 @@
 
             contentRemainingCharacters.text('Characters remaining: ' + charactersRemaining);
         });
-
 
         $("#comments--form-creation").on("submit", function (event) {
             event.preventDefault();
