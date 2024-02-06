@@ -6,6 +6,8 @@ use App\Contracts\CommentContract;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+
 
 /**
  * Comments Controller manages all the views and the bridge between the repository (database methods) and the public site requests
@@ -31,18 +33,24 @@ class CommentsController extends BaseController
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'content' => 'required | max:300',
-        ]);
+        try{
+            $this->validate($request, [
+                'content' => 'required | max:300',
+            ]);
 
-        $params = $request->except('_token');
+            $params = $request->except('_token');
 
-        $comment = $this->commentRepository->createComment($params);
+            $comment = $this->commentRepository->createComment($params);
 
-        if (!$comment) {
-            return response()->json(['errors' => "Unable to create the comment, please try again later"], 500);
+            if (!$comment) {
+                return response()->json(['errors' => "Unable to create the comment, please try again later"], 500);
+            }
+
+            return response()->json(['message' => "The comment was saved successfuly", "data" => $comment, "success" => 200]);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => "There was an error creating the comment, please ensure that the data is filled.", "data" => $comment, "error" => 500]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "Internal error. Please, try again later.", "data" => $comment, "success" => 500]);
         }
-
-        return response()->json(['message' => "The comment was saved successfuly", "data" => $comment, "success" => 200]);
     }
 }

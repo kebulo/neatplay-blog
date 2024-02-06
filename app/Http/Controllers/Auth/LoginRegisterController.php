@@ -105,24 +105,30 @@ class LoginRegisterController extends Controller
 
         return redirect()->route('login')
             ->withErrors([
-                    'email' => 'Please login to access the dashboard.',
-                ])->onlyInput('email');
+                'email' => 'Please login to access the dashboard.',
+            ])->onlyInput('email');
     }
 
     /**
      * Log out the user from application.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('login')
-            ->withSuccess('You have logged out successfully!');
-        ;
+        try {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('login')
+                ->withSuccess('You have logged out successfully!');
+            ;
+        } catch (\Exception $e) {
+            return back()->withErrors([
+                'error' => 'Unable to logout',
+            ])->onlyInput('error');
+        }
     }
 
 }

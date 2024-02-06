@@ -28,11 +28,16 @@ class CommentRepository extends BaseRepository implements CommentContract
      */
     public function listComments(string $order = 'id', string $sort = 'desc', array $columns = ['*'], int $perPage = 10)
     {
-        return $this->model
-            ->with('category')
-            ->orderBy($order, $sort)
-            ->select($columns)
-            ->paginate($perPage);
+        try {
+            return $this->model
+                ->with('blogs')
+                ->orderBy($order, $sort)
+                ->select($columns)
+                ->paginate($perPage);
+        } catch (Exception $e) {
+            Log::error('Error occurred while searching the comments: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     /**
@@ -45,9 +50,9 @@ class CommentRepository extends BaseRepository implements CommentContract
         try {
             return $this->findOneOrFail($id);
 
-        } catch (ModelNotFoundException $e) {
-
-            throw new ModelNotFoundException($e);
+        } catch (Exception $e) {
+            Log::error('Error occurred while searching the comment based on the ID: ' . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -66,24 +71,10 @@ class CommentRepository extends BaseRepository implements CommentContract
 
             return $comment;
 
-        } catch (QueryException $exception) {
-            throw new \Exception($exception->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error occurred while creating the comment: ' . $e->getMessage());
+            throw $e;
         }
-    }
-
-    /**
-     * @param array $params
-     * @return mixed
-     */
-    public function updateComment(array $params)
-    {
-        $comment = $this->findCommentById($params['id']);
-
-        $collection = collect($params)->except('_token');
-
-        $comment->update($collection->all());
-
-        return $comment;
     }
 
     /**
@@ -92,10 +83,15 @@ class CommentRepository extends BaseRepository implements CommentContract
      */
     public function deleteComment($id)
     {
-        $comment = $this->findCommentById($id);
+        try {
+            $comment = $this->findCommentById($id);
 
-        $comment->delete();
+            $comment->delete();
 
-        return $comment;
+            return $comment;
+        } catch (Exception $e) {
+            Log::error('Error occurred while deleting the comment based on the ID: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }

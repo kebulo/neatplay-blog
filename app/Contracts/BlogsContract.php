@@ -2,6 +2,10 @@
 
 namespace App\Contracts;
 
+/**
+ * Interface BlogsContract
+ * @package App\Contracts
+ */
 interface BlogsContract
 {
     /**

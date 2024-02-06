@@ -1,5 +1,6 @@
 @extends('site.app')
-@section('title', 'Homepage')
+@section('title', 'The Unveiled Pixel - Homepage')
+@section('meta_description', "Dive into 'The Unveiled Pixel,' an exploration of the digital realm's latest technological marvels. Discover the intersection of innovation and imagination in this ever-evolving landscape")
 @section('content')
 <section class="section banner banner-section">
     <div class="container banner-column">

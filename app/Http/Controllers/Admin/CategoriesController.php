@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Contracts\CategoryContract;
 use App\Http\Controllers\BaseController;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 
 class CategoriesController extends BaseController
 {
@@ -25,38 +29,69 @@ class CategoriesController extends BaseController
 
     /**
      * Loads the blogs based on the category id provided
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function getCategoriesBlogsPage()
     {
-        $categories = $this->categoryRepository->listCategories();
+        try {
+            $categories = $this->categoryRepository->listCategories();
 
-        $this->setPageTitle('Categories', 'List of all categories');
-        return view('admin.categories.index', compact('categories'));
+            $this->setPageTitle('Categories', 'List of all categories');
+
+            return view('admin.categories.index', compact('categories'));
+        } catch (ValidationException $e) {
+            return $this->responseRedirectBack('Validation error: ' . $e->getMessage(), 'error', true, true)->withInput();
+        } catch (QueryException $e) {
+            return $this->responseRedirectBack('Error occurred while loading the creation view: Database query error', 'error', true, true)->withInput();
+        } catch (ModelNotFoundException $e) {
+            return $this->responseRedirectBack('Error occurred while loading the creation view: Article not found', 'error', true, true)->withInput();
+        } catch (\Exception $e) {
+            return $this->responseRedirectBack('Internal error. Please, try again later.', 'error', true, true)->withInput();
+        }
     }
 
     /**
      * Loads the admin list of categories with the spected view
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function index(Request $request)
     {
-        $search = $request->input('search');
+        try {
+            $search = $request->input('search');
 
-        $categories = $this->categoryRepository->listCategories($search);
+            $categories = $this->categoryRepository->listCategories($search);
 
-        $this->setPageTitle('Categories', 'List of all categories');
-        return view('admin.categories.index', compact('categories'));
+            $this->setPageTitle('Categories', 'List of all categories');
+            return view('admin.categories.index', compact('categories'));
+        } catch (ValidationException $e) {
+            return $this->responseRedirectBack('Validation error: ' . $e->getMessage(), 'error', true, true)->withInput();
+        } catch (QueryException $e) {
+            return $this->responseRedirectBack('Error occurred while loading the list view: Database query error', 'error', true, true)->withInput();
+        } catch (ModelNotFoundException $e) {
+            return $this->responseRedirectBack('Error occurred while loading the list view: Article not found', 'error', true, true)->withInput();
+        } catch (\Exception $e) {
+            return $this->responseRedirectBack('Internal error. Please, try again later.', 'error', true, true)->withInput();
+        }
     }
 
     /**
      * Loads the categories admin create form
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function create()
     {
-        $this->setPageTitle('Categories', 'Create Category');
-        return view('admin.categories.create');
+        try {
+            $this->setPageTitle('Categories', 'Create Category');
+            return view('admin.categories.create');
+        } catch (ValidationException $e) {
+            return $this->responseRedirectBack('Validation error: ' . $e->getMessage(), 'error', true, true)->withInput();
+        } catch (QueryException $e) {
+            return $this->responseRedirectBack('Error occurred while loading the creation view: Database query error', 'error', true, true)->withInput();
+        } catch (ModelNotFoundException $e) {
+            return $this->responseRedirectBack('Error occurred while loading the creation view: Article not found', 'error', true, true)->withInput();
+        } catch (\Exception $e) {
+            return $this->responseRedirectBack('Internal error. Please, try again later.', 'error', true, true)->withInput();
+        }
     }
 
     /**
@@ -66,31 +101,51 @@ class CategoriesController extends BaseController
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|max:191',
-        ]);
+        try {
+            $this->validate($request, [
+                'name' => 'required|max:191',
+            ]);
 
-        $params = $request->except('_token');
+            $params = $request->except('_token');
 
-        $category = $this->categoryRepository->createCategory($params);
+            $category = $this->categoryRepository->createCategory($params);
 
-        if (!$category) {
-            return $this->responseRedirectBack('Error occurred while creating category.', 'error', true, true);
+            if (!$category) {
+                return $this->responseRedirectBack('Error occurred while creating category.', 'error', true, true);
+            }
+            return $this->responseRedirect('admin.categories.index', 'Category added successfully', 'success', false, false);
+        } catch (ValidationException $e) {
+            return $this->responseRedirectBack('Validation error: ' . $e->getMessage(), 'error', true, true)->withInput();
+        } catch (QueryException $e) {
+            return $this->responseRedirectBack('Error occurred while creating the category: Database query error', 'error', true, true)->withInput();
+        } catch (ModelNotFoundException $e) {
+            return $this->responseRedirectBack('Error occurred while creating the category: Article not found', 'error', true, true)->withInput();
+        } catch (\Exception $e) {
+            return $this->responseRedirectBack('Internal error. Please, try again later.', 'error', true, true)->withInput();
         }
-        return $this->responseRedirect('admin.categories.index', 'Category added successfully', 'success', false, false);
     }
 
     /**
      * Loads the categories admin update form with the category data based on the ID provided
      * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function edit($id)
-    {
-        $category = $this->categoryRepository->findCategoryById($id);
+    public function edit($id) {
+        try {
+            $category = $this->categoryRepository->findCategoryById($id);
 
-        $this->setPageTitle('Categories', 'Edit Category : ' . $category->name);
-        return view('admin.categories.edit', compact('category'));
+            $this->setPageTitle('Categories', 'Edit Category : ' . $category->name);
+
+            return view('admin.categories.edit', compact('category'));
+        } catch (ValidationException $e) {
+            return $this->responseRedirectBack('Validation error: ' . $e->getMessage(), 'error', true, true)->withInput();
+        } catch (QueryException $e) {
+            return $this->responseRedirectBack('Error occurred while loading the edit view: Database query error', 'error', true, true)->withInput();
+        } catch (ModelNotFoundException $e) {
+            return $this->responseRedirectBack('Error occurred while loading the edit view: Article not found', 'error', true, true)->withInput();
+        } catch (\Exception $e) {
+            return $this->responseRedirectBack('Internal error. Please, try again later.', 'error', true, true)->withInput();
+        }
     }
 
     /**
@@ -101,19 +156,29 @@ class CategoriesController extends BaseController
      */
     public function update(Request $request)
     {
-        $this->validate($request, [
-            'id' => 'required',
-            'name' => 'required|max:250',
-        ]);
+        try {
+            $this->validate($request, [
+                'id' => 'required',
+                'name' => 'required|max:250',
+            ]);
 
-        $params = $request->except('_token');
+            $params = $request->except('_token');
 
-        $category = $this->categoryRepository->updateCategory($params);
+            $category = $this->categoryRepository->updateCategory($params);
 
-        if (!$category) {
-            return $this->responseRedirectBack('Error occurred while updating category.', 'error', true, true);
+            if (!$category) {
+                return $this->responseRedirectBack('Error occurred while updating category.', 'error', true, true);
+            }
+            return $this->responseRedirectBack('Category updated successfully', 'success', false, false);
+        } catch (ValidationException $e) {
+            return $this->responseRedirectBack('Validation error: ' . $e->getMessage(), 'error', true, true)->withInput();
+        } catch (QueryException $e) {
+            return $this->responseRedirectBack('Error occurred while updating the category: Database query error. Please check the data and try again.', 'error', true, true)->withInput();
+        } catch (ModelNotFoundException $e) {
+            return $this->responseRedirectBack('Error occurred while updating the category: Could not find the resource', 'error', true, true)->withInput();
+        } catch (\Exception $e) {
+            return $this->responseRedirectBack('Internal error. Please, try again later.', 'error', true, true)->withInput();
         }
-        return $this->responseRedirectBack('Category updated successfully', 'success', false, false);
     }
 
     /**
@@ -123,21 +188,31 @@ class CategoriesController extends BaseController
      */
     public function delete($id)
     {
-        $rules = [
-            'id' => 'required|integer|exists:categories,id',
-        ];
+        try {
+            $rules = [
+                'id' => 'required|integer|exists:categories,id',
+            ];
 
-        $validator = Validator::make(['id' => $id], $rules);
+            $validator = Validator::make(['id' => $id], $rules);
 
-        if ($validator->fails()) {
-            return redirect()->route('admin.blogs.index')->withErrors($validator)->withInput();
+            if ($validator->fails()) {
+                return redirect()->route('admin.blogs.index')->withErrors($validator)->withInput();
+            }
+
+            $category = $this->categoryRepository->deleteCategory($id);
+
+            if (!$category) {
+                return $this->responseRedirectBack('Error occurred while deleting category.', 'error', true, true);
+            }
+            return $this->responseRedirect('admin.categories.index', 'Category deleted successfully', 'success', false, false);
+        } catch (ValidationException $e) {
+            return $this->responseRedirectBack('Validation error: ' . $e->getMessage(), 'error', true, true)->withInput();
+        } catch (QueryException $e) {
+            return $this->responseRedirectBack('Error occurred while deleting the category: Database query error. Please check the data and try again.', 'error', true, true)->withInput();
+        } catch (ModelNotFoundException $e) {
+            return $this->responseRedirectBack('Error occurred while deleting the category: Could not find the resource', 'error', true, true)->withInput();
+        } catch (\Exception $e) {
+            return $this->responseRedirectBack('Internal error. Please, try again later.', 'error', true, true)->withInput();
         }
-
-        $category = $this->categoryRepository->deleteCategory($id);
-
-        if (!$category) {
-            return $this->responseRedirectBack('Error occurred while deleting category.', 'error', true, true);
-        }
-        return $this->responseRedirect('admin.categories.index', 'Category deleted successfully', 'success', false, false);
     }
 }

@@ -25,7 +25,7 @@
                     </li>
                     <li class="menu-item">
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="<?php echo route('logout'); ?>" onclick="event.preventDefault();
+                            <a class="logout-link dropdown-item" href="<?php echo route('logout'); ?>" onclick="event.preventDefault();
                                          document.getElementById('logout-form').submit();">
                                 <?php echo __('Logout'); ?>
                             </a>

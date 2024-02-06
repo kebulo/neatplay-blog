@@ -2,6 +2,10 @@
 
 namespace App\Contracts;
 
+/**
+ * Interface CommentContract
+ * @package App\Contracts
+ */
 interface CommentContract
 {
     /**
@@ -23,12 +27,6 @@ interface CommentContract
      * @return mixed
      */
     public function createComment(array $params);
-
-    /**
-     * @param array $params
-     * @return mixed
-     */
-    public function updateComment(array $params);
 
     /**
      * @param $id

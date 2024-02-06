@@ -34,8 +34,8 @@
                         <tr>
                             <th> Code </th>
                             <th> Title </th>
-                            <th class="text-center"> Publish Date </th>
-                            <th class="text-center"> Public </th>
+                            <th class="text-center"> Publication Date </th>
+                            <th class="text-center"> Is Public </th>
                             <th style="width:100px; min-width:100px;" class="text-center text-danger">
                                 <i class="fa fa-bolt"> </i>
                             </th>
@@ -46,7 +46,7 @@
                                 <tr>
                                     <td>{{ $blog->id }}</td>
                                     <td>{{ $blog->title }}</td>
-                                    <td>{{ $blog->publish_date }}</td>
+                                    <td class="text-center">{{ $blog->publication_date }}</td>
                                     <td class="text-center">
                                         @if ($blog->public == 1)
                                             <span>Yes</span>

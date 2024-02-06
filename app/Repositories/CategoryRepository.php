@@ -36,16 +36,21 @@ class CategoryRepository extends BaseRepository implements CategoryContract
      */
     public function listCategories(string $search=null, string $order = 'id', string $sort = 'desc', array $columns = ['*'])
     {
-        $query = $this->model->orderBy($order, $sort);
+        try {
+            $query = $this->model->orderBy($order, $sort);
 
-        // If there's a search query, add a where clause for the title
-        if ($search) {
-            $query->where('name', 'like', '%' . $search . '%');
+            // If there's a search query, add a where clause for the title
+            if ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            }
+
+            $query->where('user_id', Auth::user()->id);
+
+            return $query->select($columns)->get();
+         } catch (Exception $e) {
+            Log::error('Error occurred while searching the categories: ' . $e->getMessage());
+            throw $e;
         }
-
-        $query->where('user_id', Auth::user()->id);
-
-        return $query->select($columns)->get();
     }
 
     /**
@@ -57,10 +62,9 @@ class CategoryRepository extends BaseRepository implements CategoryContract
     {
         try {
             return $this->findOneOrFail($id);
-
-        } catch (ModelNotFoundException $e) {
-
-            throw new ModelNotFoundException($e);
+        } catch (Exception $e) {
+            Log::error('Error occurred while searching the category based on the ID: ' . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -83,8 +87,9 @@ class CategoryRepository extends BaseRepository implements CategoryContract
 
             return $category;
 
-        } catch (QueryException $exception) {
-            throw new \Exception($exception->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error occurred while creating the category: ' . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -94,23 +99,28 @@ class CategoryRepository extends BaseRepository implements CategoryContract
      */
     public function updateCategory(array $params)
     {
-        $category = $this->findCategoryById($params['id']);
+        try {
+            $category = $this->findCategoryById($params['id']);
 
-        $user_id = Auth::user()->id;
+            $user_id = Auth::user()->id;
 
-        if ($category->user_id && $category->user_id != $user_id) {
-            throw new \Exception("Invalid user ID provided.");
+            if ($category->user_id && $category->user_id != $user_id) {
+                throw new \Exception("Invalid user ID provided.");
+            }
+
+            $collection = collect($params)->except('_token');
+
+            $user_id = auth()->id();
+
+            $merge = $collection->merge(compact('user_id'));
+
+            $category->update($merge->all());
+
+            return $category;
+         } catch (Exception $e) {
+            Log::error('Error occurred while updating the category: ' . $e->getMessage());
+            throw $e;
         }
-
-        $collection = collect($params)->except('_token');
-
-        $user_id = auth()->id();
-
-        $merge = $collection->merge(compact('public', 'user_id'));
-
-        $category->update($merge->all());
-
-        return $category;
     }
 
     /**
@@ -119,16 +129,21 @@ class CategoryRepository extends BaseRepository implements CategoryContract
      */
     public function deleteCategory($id)
     {
-        $category = $this->findCategoryById($id);
+        try {
+            $category = $this->findCategoryById($id);
 
-        $user_id = Auth::user()->id;
+            $user_id = Auth::user()->id;
 
-        if ($category->user_id && $category->user_id != $user_id) {
-            throw new \Exception("Invalid user ID provided.");
+            if ($category->user_id && $category->user_id != $user_id) {
+                throw new \Exception("Invalid user ID provided.");
+            }
+
+            $category->delete();
+
+            return $category;
+         } catch (Exception $e) {
+            Log::error('Error occurred while deleting the category: ' . $e->getMessage());
+            throw $e;
         }
-
-        $category->delete();
-
-        return $category;
     }
 }

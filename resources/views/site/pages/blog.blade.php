@@ -40,7 +40,13 @@
             <div>
                 <h4>
                     {{ $comment->name ?? 'Anonymous' }}
-                    <small class="comments--publication-date">{{ \Carbon\Carbon::parse($comment->created_at)->format('F Y, H:i')}}</small>
+                    <small class="comments--publication-date">
+                        @if($comment->publication_date)
+                            {{ \Carbon\Carbon::parse($comment->publication_date)->format('F j, Y, H:i') }}
+                        @else
+                            {{ \Carbon\Carbon::parse($comment->created_at)->format('F j, Y, H:i') }}
+                        @endif
+                    </small>
                 </h4>
                 <p>{{ $comment->content }}</p>
             </div>
@@ -123,13 +129,25 @@
                 processData: false,
                 success: function (response) {
                     if (response.success === 200) {
-                        console.log(response.data);
+                        nameInput.val("");
+                        contentInput.val("");
+
                         let name = (response.data.name)?response.data.name:'Anonymous';
+
+                        let responseDate = (response.data.publication_date)?response.data.publication_date:response.data.created_at;
+                        const publicationDate = new Date(responseDate);
+                        const formattedDate = publicationDate.toLocaleString('en-UK', {
+                            month: 'long', // Full month name (e.g., "January")
+                            year: 'numeric', // Four-digit year (e.g., "2023")
+                            hour: 'numeric', // Hour (e.g., "12", "03")
+                            minute: 'numeric', // Minute (e.g., "05")
+                        }).replace(' at', ',');
+
                         let commentHtml = `<hr class="separator" />
                         <div class="comments--info-main mb-1">
                            <img src="https://source.unsplash.com/600x400/?profile" class="comments--info-image" alt="" />
                            <div>
-                               <h4>`+name+` <small class="comments--publication-date">{{ \Carbon\Carbon::parse(`+response.data.created_at+`)->format('F Y, H:i')}}</small></h4>
+                               <h4>`+name+` <small class="comments--publication-date">`+formattedDate+`</small></h4>
                                <p>`+response.data.content+`</p>
                            </div>
                         </div>`;
@@ -151,7 +169,7 @@
             setTimeout(() => {
                 errorBox.html("");
                 errorBox.css({"display": "none"});
-            }, 3000);
+            }, 5000);
         });
     });
 

@@ -66,6 +66,10 @@ main {
     overflow: hidden;
 }
 
+.logout-link {
+    color: #4242f0;
+}
+
 a,
 button {
     cursor: pointer;

@@ -28,11 +28,14 @@ Route::group(['prefix' => 'comments'], function () {
 
 Route::controller(LoginRegisterController::class)->group(function () {
     // Register a new user
-    Route::get('/register', 'register')->name('register');
     Route::post('/store', 'store')->name('store');
     // Login the user
     Route::get('/login', 'login')->name('login');
     Route::post('/authenticate', 'authenticate')->name('authenticate');
     // Logout the user
     Route::post('/logout', 'logout')->name('logout');
+});
+
+Route::fallback(function () {
+    return response()->view('site.pages.404', [], 404);
 });

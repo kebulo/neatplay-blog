@@ -54,6 +54,7 @@
                 <label for="image">Image</label>
                 <input id="image" type="file" name="image" class="form-control"
                     accept="image/png, image/jpeg, image/jpg" />
+                <small>We recommend uploading the image with the dimensions of [600 x 400].</small>
             </div>
 
             <div class="col-12 col-sm-4 col-md-2 position-relative">
